@@ -13,6 +13,8 @@ Java 10, Kotlin, Spring Boot, Vue.js, jQuery and Bootstrap.
 For now, use the TensorFlow Serving architecture through a gRPC or REST interface, 
 to include TensorFlow into your JVM application architecture.
 
+Use `git lfs` when pushing model files to GitHub.
+
 ### Lessons learned
 
 As always, TensorFlow is very finicky about its support libraries.
