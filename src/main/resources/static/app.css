@@ -1,0 +1,11 @@
+.centered {
+    align-content: center;
+}
+
+p.pix img {
+    width: 640px;
+}
+
+img.masked {
+    mask-type: luminance;
+}

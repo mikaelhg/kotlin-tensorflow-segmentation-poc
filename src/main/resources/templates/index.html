@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link>
+    <title>Segmentation POC!</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.0/litera/bootstrap.min.css" rel="stylesheet" integrity="sha384-E+ZoPrD9N70Q8SUyx+eufEe3KkDtuORRKqt8koXJ9Uxjm4d37YeaU517lm63QRjM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css" integrity="sha256-e47xOkXs1JXFbjjpoRr1/LhVcqSzRmGmPqsrUQeVs+g=" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="/app.css" />
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js" integrity="sha256-Rnxk6lia2GZLfke2EKwKWPjy0q2wCW66SN1gKCXquK4=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script src="/app.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="row align-items-center">
+        <div class="col">
+            <h1 class="centered">Segmentation POC!</h1>
+        </div>
+    </div>
+
+
+    <div id="upload-form">
+        <form action="/upload/image" enctype="multipart/form-data"
+              class="dropzone" id="my-awesome-dropzone"></form>
+    </div>
+
+    <div id="output"></div>
+
+    <div id="app">
+        <div v-for="img in images">
+            <p class="pix">
+                <img class="masked" 
+                    v-bind:id="img.imageDomId"
+                    v-bind:style="img.style"
+                    v-bind:src="img.imageUrl"/>
+                <br/>
+                <img v-bind:id="img.maskDomId" v-bind:src="img.maskUrl"/>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>
