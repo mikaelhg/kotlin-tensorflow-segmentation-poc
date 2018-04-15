@@ -15,33 +15,32 @@ dependencies:
 # CPU
 # - {groupId: org.tensorflow, artifactId: tensorflow, version: "${tensorflow.version}"}
 
-# GPU, CUDA 9.0, cuDNN 7.0
+# GPU: CUDA 9.0, cuDNN 7.0
 - {groupId: org.tensorflow, artifactId: tensorflow, version: "${tensorflow.version}",
     exclusions: [{groupId: org.tensorflow, artifactId: libtensorflow_jni}]}
 - {groupId: org.tensorflow, artifactId: libtensorflow_jni_gpu, version: "${tensorflow.version}"}
 
 # Tensorflow protocol buffers
-
 - {groupId: org.tensorflow, artifactId: proto, version: "${tensorflow.version}"}
 
-
-- {groupId: org.synchronoss.cloud, artifactId: nio-multipart-parser}
-
+# Spring Boot
 - {groupId: org.springframework.boot, artifactId: spring-boot-starter-webflux,
     exclusions: [{groupId: org.hibernate, artifactId: '*'}, {groupId: org.hibernate.validator, artifactId: '*'}]}
 - {groupId: org.springframework.boot, artifactId: spring-boot-starter-thymeleaf}
 
+- {scope: test, groupId: org.springframework.boot, artifactId: spring-boot-starter-test}
+
 - {groupId: org.springframework.boot, artifactId: spring-boot-devtools, optional: true}
 
+#Kotlin
 - {groupId: org.jetbrains.kotlin, artifactId: kotlin-stdlib-jre8, version: "${kotlin.version}"}
 - {groupId: org.jetbrains.kotlin, artifactId: kotlin-reflect, version: "${kotlin.version}"}
-
-- {scope: test, groupId: org.springframework.boot, artifactId: spring-boot-starter-test}
 
 build:
   sourceDirectory: src/main/kotlin
   testSourceDirectory: src/test/kotlin
   plugins:
+  # 2.21.0 supports Java 10
   - {groupId: org.apache.maven.plugins, artifactId: maven-surefire-plugin, version: 2.21.0}
   - {groupId: org.springframework.boot, artifactId: spring-boot-maven-plugin}
   - groupId: org.jetbrains.kotlin
