@@ -15,6 +15,10 @@ class MaskedImage {
         return `mask-${this.maskId}`;
     }
 
+    get combinedUrl() {
+        return `/show/combined/${this.imageId}/${this.maskId}`;
+    }
+
     get imageUrl() {
         return `/show/image/${this.imageId}`;
     }
@@ -33,7 +37,7 @@ Dropzone.options.myAwesomeDropzone = {
     init: function() {
         this.on("addedfile", function(file) { console.log("Added file."); });
         this.on("success", function (file, response) {
-            app.images.push(new MaskedImage(response.imageId, response.maskId));
+            app.images.unshift(new MaskedImage(response.imageId, response.maskId));
         });
     }
 };

@@ -40,12 +40,8 @@
     <div id="app">
         <div v-for="img in images">
             <p class="pix">
-                <img class="masked" 
-                    :id="img.imageDomId"
-                    :style="img.style"
-                    :src="img.imageUrl"/>
-                <br/>
-                <img v-bind:id="img.maskDomId" v-bind:src="img.maskUrl"/>
+                <img :src="img.combinedUrl" width="720" /><br/>
+                <img :src="img.imageUrl" width="360" /><img :src="img.maskUrl" width="360" />
             </p>
         </div>
     </div>

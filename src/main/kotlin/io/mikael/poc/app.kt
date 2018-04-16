@@ -37,6 +37,7 @@ class Application(val handler: PresentationHandler) {
         GET("/", handler::indexPage)
         GET("/show/image/{id}", handler::showImage)
         GET("/show/mask/{id}", handler::showMask)
+        GET("/show/combined/{imageId}/{maskId}", handler::showCombined)
         POST("/upload/image", handler::uploadImage)
     }
 
@@ -90,6 +91,12 @@ class PresentationHandler(val svc: PresentationService) {
     fun showMask(req: ServerRequest): Mono<ServerResponse> {
         val id = req.pathVariable("id").toLong()
         return ok().contentType(MediaType.IMAGE_PNG).syncBody(svc.showMask(id))
+    }
+
+    fun showCombined(req: ServerRequest): Mono<ServerResponse> {
+        val imageId = req.pathVariable("imageId").toLong()
+        val maskId = req.pathVariable("maskId").toLong()
+        return ok().contentType(MediaType.IMAGE_PNG).syncBody(svc.showCombined(imageId, maskId))
     }
 
     fun uploadImage(req: ServerRequest): Mono<ServerResponse> {

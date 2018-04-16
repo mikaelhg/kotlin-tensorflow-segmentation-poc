@@ -1,9 +1,11 @@
 package io.mikael.poc.services
 
 import io.mikael.poc.ProcessResponse
+import org.slf4j.LoggerFactory
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -13,6 +15,10 @@ import javax.imageio.ImageIO
 
 @Service
 class PresentationService(val fileManager: FileManagerService, val segmentation: SegmentationService) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(PresentationService::class.java)
+    }
 
     private val counter = AtomicLong()
 
@@ -33,6 +39,32 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
 
     fun showImage(id: Long): ByteArray {
         return Files.readAllBytes(Paths.get(images[id]))
+    }
+
+    /**
+     * Hacky and unoptimal as hell, but who cares in a POC.
+     */
+    fun showCombined(imageId: Long, maskId: Long): ByteArray {
+        val image = ImageIO.read(File(images[imageId]))
+        val mask = ImageIO.read(File(masks[maskId]))
+        val result = BufferedImage(image.width, image.height, BufferedImage.TYPE_3BYTE_BGR)
+
+        val fx = mask.width.toFloat() / image.width.toFloat()
+        val fy = mask.height.toFloat() / image.height.toFloat()
+
+        for (x in 0 until image.width) {
+            for (y in 0 until image.height) {
+                val m = mask.getRGB((x * fx).toInt(), (y * fy).toInt())
+                if (m < -1) {
+                    result.setRGB(x, y, image.getRGB(x, y))
+                }
+            }
+        }
+
+        ByteArrayOutputStream().use { baos ->
+            ImageIO.write(result, "PNG", baos)
+            return baos.toByteArray()
+        }
     }
 
     private fun persistImage(filePart: FilePart): Long {
