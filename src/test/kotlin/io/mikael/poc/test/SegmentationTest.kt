@@ -26,7 +26,7 @@ class SegmentationTest {
     @Test
     fun init() {
         imageFile.inputStream.use {
-            val mask = segmentationService.segmented(ImageIO.read(it))
+            val mask = segmentationService.transform(ImageIO.read(it))
             val targetSize = SegmentationService.INPUT_IMAGE_SIZE.toInt()
             Assert.assertTrue("size", mask.width == targetSize || mask.height == targetSize)
         }

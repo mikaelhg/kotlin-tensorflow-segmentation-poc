@@ -11,7 +11,7 @@ logging.level:
 spring.jackson.serialization.indent_output: true
 
 app.gpu-enabled: true
-app.gpu-memory: 0.25
+app.gpu-memory-fraction: 0.25
 
 app.model: 'classpath:deeplabv3_mnv2_pascal_trainval.pb'
 #app.model: 'file:///home/mikael/devel/temp/segmentation/models/deeplabv3_pascal_trainval/frozen_inference_graph.pb'

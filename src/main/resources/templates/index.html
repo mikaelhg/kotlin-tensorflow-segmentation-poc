@@ -30,8 +30,7 @@
         </div>
     </div>
 
-
-    <div id="upload-form">
+   <div id="upload-form">
         <form action="/upload/image" enctype="multipart/form-data"
               class="dropzone" id="my-awesome-dropzone"></form>
     </div>
@@ -42,9 +41,9 @@
         <div v-for="img in images">
             <p class="pix">
                 <img class="masked" 
-                    v-bind:id="img.imageDomId"
-                    v-bind:style="img.style"
-                    v-bind:src="img.imageUrl"/>
+                    :id="img.imageDomId"
+                    :style="img.style"
+                    :src="img.imageUrl"/>
                 <br/>
                 <img v-bind:id="img.maskDomId" v-bind:src="img.maskUrl"/>
             </p>

@@ -1,10 +1,8 @@
 package io.mikael.poc.services
 
+import io.mikael.poc.AppConfiguration
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.core.io.Resource
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.util.StreamUtils
 import org.tensorflow.Graph
@@ -22,20 +20,8 @@ import java.nio.LongBuffer
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
-@Component
-@ConfigurationProperties(prefix="app")
-class AppConfiguration {
-
-    lateinit var model: Resource
-
-    var gpuMemoryFraction: Double = 0.25
-
-    var gpuEnabled: Boolean = true
-
-}
-
 @Service
-class SegmentationService {
+class SegmentationService(val app: AppConfiguration) {
 
     companion object {
         private val log = LoggerFactory.getLogger(SegmentationService::class.java)
@@ -46,9 +32,6 @@ class SegmentationService {
         const val INPUT_IMAGE_SIZE = 513f
         const val LABEL_PERSON = 15L
     }
-
-    @Autowired
-    lateinit var app: AppConfiguration
 
     private lateinit var graph: Graph
 
@@ -85,12 +68,14 @@ class SegmentationService {
         graph.close()
     }
 
-    fun segmented(inputImage: BufferedImage): BufferedImage {
+    fun transform(inputImage: BufferedImage): BufferedImage {
         makeImageTensor(inputImage).use {
             return session.runner()
                     .feed(INPUT_TENSOR_NAME, it)
                     .fetch(OUTPUT_TENSOR_NAME)
-                    .run().get(0).expect(java.lang.Long::class.java)
+                    .run()
+                    .get(0)
+                    .expect(java.lang.Long::class.java)
                     .let(::maskTensorToImage)
         }
     }
@@ -98,6 +83,9 @@ class SegmentationService {
     private fun labelToColour(label: Long) =
             if (label == LABEL_PERSON) Int.MIN_VALUE else Int.MAX_VALUE
 
+    /**
+     * Contract: Closes the input tensor.
+     */
     private fun maskTensorToImage(result: Tensor<java.lang.Long>): BufferedImage {
         val maskBuffer = LongBuffer.allocate(result.numElements())
         result.writeTo(maskBuffer)
@@ -111,6 +99,8 @@ class SegmentationService {
                 maskImage.setRGB(x.toInt(), y.toInt(), labelToColour(maskBuffer[i]))
             }
         }
+
+        result.close()
 
         return maskImage
     }

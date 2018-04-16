@@ -24,9 +24,7 @@ class MaskedImage {
     }
 
     get style() {
-        return `
-        mask: url("${this.maskUrl}") exclude;
-        `;
+        return `width: 720px;`;
     }
 
 }

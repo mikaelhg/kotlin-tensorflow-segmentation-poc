@@ -3,10 +3,13 @@ package io.mikael.poc
 import io.mikael.poc.services.PresentationService
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.function.BodyExtractors
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -36,6 +39,35 @@ class Application(val handler: PresentationHandler) {
         GET("/show/mask/{id}", handler::showMask)
         POST("/upload/image", handler::uploadImage)
     }
+
+}
+
+@Component
+@ConfigurationProperties(prefix="app")
+class AppConfiguration {
+
+    /**
+     * The DeepLab model TensorFlow model protocol buffer file.
+     *
+     * app.model: 'classpath:deeplabv3_mnv2_pascal_trainval.pb'
+     */
+    lateinit var model: Resource
+
+    /**
+     * How much of the GPU memory we'll reserve maximum.
+     *
+     * Starts with around 100 MB, and grows as needed up to this limit.
+     *
+     * app.gpu-memory-fraction: 0.25
+     */
+    var gpuMemoryFraction: Double = 0.25
+
+    /**
+     * Doesn't work yet, don't know if I can get this to work.
+     *
+     * app.gpu-enabled: true
+     */
+    var gpuEnabled: Boolean = true
 
 }
 

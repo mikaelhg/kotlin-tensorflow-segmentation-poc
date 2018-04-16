@@ -21,9 +21,9 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
     private val masks = ConcurrentHashMap<Long, String>()
 
     fun processImage(filePart: FilePart): ProcessResponse {
-        val imageId = persist(filePart)
-        val mask = segmentation.segmented(ImageIO.read(File(images[imageId])))
-        val maskId = persist(mask)
+        val imageId = persistImage(filePart)
+        val mask = segmentation.transform(ImageIO.read(File(images[imageId])))
+        val maskId = persistMask(mask)
         return ProcessResponse(imageId, maskId)
     }
 
@@ -35,15 +35,15 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
         return Files.readAllBytes(Paths.get(images[id]))
     }
 
-    private fun persist(filePart: FilePart): Long {
+    private fun persistImage(filePart: FilePart): Long {
         val id = counter.getAndIncrement()
-        images.put(id, fileManager.saveImage(filePart))
+        images[id] = fileManager.saveImage(filePart)
         return id
     }
 
-    private fun persist(bufferedImage: BufferedImage): Long {
+    private fun persistMask(bufferedImage: BufferedImage): Long {
         val id = counter.getAndIncrement()
-        masks.put(id, fileManager.saveMask(bufferedImage))
+        masks[id] = fileManager.saveMask(bufferedImage)
         return id
     }
 
