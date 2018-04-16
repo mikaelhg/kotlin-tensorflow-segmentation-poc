@@ -77,26 +77,27 @@ class PresentationHandler(val svc: PresentationService) {
 
     companion object {
         private val log = LoggerFactory.getLogger(PresentationHandler::class.java)
+        private val TEXT_HTML_UTF8 = MediaType.parseMediaType("text/html; charset=utf-8")
     }
 
     fun indexPage(req: ServerRequest): Mono<ServerResponse> {
-        return ok().contentType(TEXT_HTML_UTF8).render("index")
+        return html().render("index")
     }
 
     fun showImage(req: ServerRequest): Mono<ServerResponse> {
         val id = req.pathVariable("id").toLong()
-        return ok().contentType(MediaType.IMAGE_PNG).syncBody(svc.showImage(id))
+        return png().syncBody(svc.showImage(id))
     }
 
     fun showMask(req: ServerRequest): Mono<ServerResponse> {
         val id = req.pathVariable("id").toLong()
-        return ok().contentType(MediaType.IMAGE_PNG).syncBody(svc.showMask(id))
+        return png().syncBody(svc.showMask(id))
     }
 
     fun showCombined(req: ServerRequest): Mono<ServerResponse> {
         val imageId = req.pathVariable("imageId").toLong()
         val maskId = req.pathVariable("maskId").toLong()
-        return ok().contentType(MediaType.IMAGE_PNG).syncBody(svc.showCombined(imageId, maskId))
+        return png().syncBody(svc.showCombined(imageId, maskId))
     }
 
     fun uploadImage(req: ServerRequest): Mono<ServerResponse> {
@@ -106,5 +107,9 @@ class PresentationHandler(val svc: PresentationService) {
                     ok().syncBody(svc.processImage(filePart))
                 }
     }
+
+    private fun png() = ServerResponse.ok().contentType(MediaType.IMAGE_PNG)
+
+    private fun html() = ServerResponse.ok().contentType(TEXT_HTML_UTF8)
 
 }
