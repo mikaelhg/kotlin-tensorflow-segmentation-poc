@@ -55,6 +55,12 @@ Since Ubuntu 18.04 LTS is very soon coming out, I'm hoping that Google and NVidi
 libraries on that, and we'll kind of get a reasonable baseline for all the different kinds of
 libraries that are required for actual application development.
 
+It would be nice if the official libraries shipped in Maven JARs would be compiled with the same
+optimizations as the Python libraries.
+
+`org.tensorflow.Graph.importGraphDef(byte[])` should also support import from a stream, or an
+off-heap bytebuffer.
+
 ### Installation
 
 Requires SPECIFICALLY these library versions:
