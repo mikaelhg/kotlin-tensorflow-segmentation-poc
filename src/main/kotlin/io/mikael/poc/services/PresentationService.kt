@@ -4,6 +4,7 @@ import io.mikael.poc.ProcessResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
+import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -48,6 +49,12 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
         val image = ImageIO.read(File(images[imageId]))
         val mask = ImageIO.read(File(masks[maskId]))
         val result = BufferedImage(image.width, image.height, BufferedImage.TYPE_3BYTE_BGR)
+
+        result.createGraphics().apply {
+            color = Color.WHITE;
+            fillRect(0, 0, image.width, image.height)
+            dispose()
+        }
 
         val fx = mask.width.toFloat() / image.width.toFloat()
         val fy = mask.height.toFloat() / image.height.toFloat()
