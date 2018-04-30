@@ -63,13 +63,17 @@ off-heap bytebuffer.
 
 ### Installation
 
-Requires SPECIFICALLY these library versions:
+By default, the POC runs in CPU mode, which is much, much slower than the GPU mode,
+which can be switched on by commenting the CPU section and uncommenting the GPU
+section in the `pom.yml` file.
+
+Running the POC in GPU mode requires SPECIFICALLY these library versions:
 
 CUDA 9.0 (**not** 8.0, **not** 9.1)
 
 cuDNN 7.0 (**not** 7.1)
 
-IF YOU DO NOT USE THESE SPECIFIC LIBRARY VERSIONS, THE APP WILL NOT WORK.
+IF YOU DO NOT USE THESE SPECIFIC LIBRARY VERSIONS, THE APP WILL NOT WORK IN GPU MODE.
 
 See:
 
