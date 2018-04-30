@@ -13,12 +13,12 @@ properties: {java.version: '10', kotlin.version: '1.2.41', tensorflow.version: '
 dependencies:
 
 # CPU
-# - {groupId: org.tensorflow, artifactId: tensorflow, version: "${tensorflow.version}"}
+- {groupId: org.tensorflow, artifactId: tensorflow, version: "${tensorflow.version}"}
 
 # GPU: CUDA 9.0, cuDNN 7.0
-- {groupId: org.tensorflow, artifactId: tensorflow, version: "${tensorflow.version}",
-    exclusions: [{groupId: org.tensorflow, artifactId: libtensorflow_jni}]}
-- {groupId: org.tensorflow, artifactId: libtensorflow_jni_gpu, version: "${tensorflow.version}"}
+#- {groupId: org.tensorflow, artifactId: tensorflow, version: "${tensorflow.version}",
+#    exclusions: [{groupId: org.tensorflow, artifactId: libtensorflow_jni}]}
+#- {groupId: org.tensorflow, artifactId: libtensorflow_jni_gpu, version: "${tensorflow.version}"}
 
 # Tensorflow protocol buffers
 - {groupId: org.tensorflow, artifactId: proto, version: "${tensorflow.version}"}
