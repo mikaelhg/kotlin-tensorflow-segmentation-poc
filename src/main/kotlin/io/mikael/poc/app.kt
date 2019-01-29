@@ -10,7 +10,6 @@ import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.function.BodyExtractors
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -72,7 +71,7 @@ class AppConfiguration {
 
 }
 
-@Controller
+@Component
 class PresentationHandler(val svc: PresentationService) {
 
     companion object {

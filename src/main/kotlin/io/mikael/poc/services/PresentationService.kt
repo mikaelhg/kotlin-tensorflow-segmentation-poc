@@ -34,15 +34,14 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
         return ProcessResponse(imageId, maskId)
     }
 
-    fun showMask(id: Long): ByteArray {
-        return Files.readAllBytes(Paths.get(masks[id]))
-    }
+    fun showMask(id: Long): ByteArray = Files.readAllBytes(Paths.get(masks[id]))
 
-    fun showImage(id: Long): ByteArray {
-        return Files.readAllBytes(Paths.get(images[id]))
-    }
+    fun showImage(id: Long): ByteArray = Files.readAllBytes(Paths.get(images[id]))
 
     /**
+     * Cut the contents of the input image onto a white background,
+     * but only those pixels which are labeled HUMAN on the prediction mask.
+     *
      * Hacky and unoptimal as hell, but who cares in a POC.
      */
     fun showCombined(imageId: Long, maskId: Long): ByteArray {
@@ -51,7 +50,7 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
         val result = BufferedImage(image.width, image.height, BufferedImage.TYPE_3BYTE_BGR)
 
         result.createGraphics().apply {
-            color = Color.WHITE;
+            color = Color.WHITE
             fillRect(0, 0, image.width, image.height)
             dispose()
         }
