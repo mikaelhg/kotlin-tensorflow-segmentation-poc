@@ -58,7 +58,7 @@ class SegmentationService(val app: AppConfiguration) {
             log.debug("GPU disabled")
             config.putDeviceCount("GPU", 0)
         }
-        config.setGpuOptions(gpuOptions.build())
+        config.gpuOptions = gpuOptions.build()
         session = Session(graph, config.build().toByteArray())
     }
 
