@@ -67,16 +67,8 @@ By default, the POC runs in CPU mode, which is much, much slower than the GPU mo
 which can be switched on by commenting the CPU section and uncommenting the GPU
 section in the `pom.yml` file.
 
-Running the POC in GPU mode requires SPECIFICALLY these library versions:
-
-CUDA 9.0 (**not** 8.0, **not** 9.1)
-
-cuDNN 7.0 (**not** 7.1)
-
-IF YOU DO NOT USE THESE SPECIFIC LIBRARY VERSIONS, THE APP WILL NOT WORK IN GPU MODE.
-
-See:
-
-```
-sudo apt-get install -y --allow-downgrades libcudnn7-dev=7.0.5.15-1+cuda9.0 libcudnn7=7.0.5.15-1+cuda9.0
-```
+Look in the `pom.yml` file to see which version of Tensorflow is being used, then
+go to the Tensorflow installation site, and make sure that you have very specifically
+the mentioned MAJOR.MINOR version of all the specified libraries installed. If you have
+anything else than those specific versions installed, it's very likely that the 
+application just won't work. That's Tensorflow for you.
