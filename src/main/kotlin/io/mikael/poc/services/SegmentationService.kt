@@ -19,6 +19,7 @@ import java.nio.ByteBuffer
 import java.nio.LongBuffer
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
+import kotlin.math.max
 
 @Service
 class SegmentationService(val app: AppConfiguration) {
@@ -106,7 +107,7 @@ class SegmentationService(val app: AppConfiguration) {
     }
 
     private fun makeImageTensor(input: BufferedImage): Tensor<UInt8> {
-        val resizeRatio = INPUT_IMAGE_SIZE / Math.max(input.width, input.height)
+        val resizeRatio = INPUT_IMAGE_SIZE / max(input.width, input.height)
         val rw = (input.width * resizeRatio).toInt()
         val rh = (input.height * resizeRatio).toInt()
 

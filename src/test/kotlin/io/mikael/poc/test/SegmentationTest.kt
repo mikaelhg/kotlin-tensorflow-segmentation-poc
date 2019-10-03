@@ -2,6 +2,7 @@ package io.mikael.poc.test
 
 import io.mikael.poc.services.SegmentationService
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,8 +23,8 @@ class SegmentationTest {
     @Value("classpath:bonding-daylight-enjoying-708440.jpg")
     lateinit var imageFile: Resource
 
-
     @Test
+    @Ignore
     fun init() {
         imageFile.inputStream.use {
             val mask = segmentationService.transform(ImageIO.read(it))
