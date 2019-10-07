@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong
 import javax.imageio.ImageIO
 
 @Service
-class PresentationService(val fileManager: FileManagerService, val segmentation: SegmentationService) {
+class PresentationService(private val fileManager: FileManagerService, private val segmentation: SegmentationService) {
 
     companion object {
         private val log = LoggerFactory.getLogger(PresentationService::class.java)
@@ -29,14 +29,14 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
 
     fun processImage(filePart: FilePart): ProcessResponse {
         val imageId = persistImage(filePart)
-        val mask = segmentation.transform(ImageIO.read(File(images[imageId])))
+        val mask = segmentation.transform(ImageIO.read(File(images[imageId]!!)))
         val maskId = persistMask(mask)
         return ProcessResponse(imageId, maskId)
     }
 
-    fun showMask(id: Long): ByteArray = Files.readAllBytes(Paths.get(masks[id]))
+    fun showMask(id: Long): ByteArray = Files.readAllBytes(Paths.get(masks[id]!!))
 
-    fun showImage(id: Long): ByteArray = Files.readAllBytes(Paths.get(images[id]))
+    fun showImage(id: Long): ByteArray = Files.readAllBytes(Paths.get(images[id]!!))
 
     /**
      * Cut the contents of the input image onto a white background,
@@ -45,8 +45,8 @@ class PresentationService(val fileManager: FileManagerService, val segmentation:
      * Hacky and unoptimal as hell, but who cares in a POC.
      */
     fun showCombined(imageId: Long, maskId: Long): ByteArray {
-        val image = ImageIO.read(File(images[imageId]))
-        val mask = ImageIO.read(File(masks[maskId]))
+        val image = ImageIO.read(File(images[imageId]!!))
+        val mask = ImageIO.read(File(masks[maskId]!!))
         val result = BufferedImage(image.width, image.height, BufferedImage.TYPE_3BYTE_BGR)
 
         result.createGraphics().apply {
