@@ -77,7 +77,7 @@ class SegmentationService(val app: AppConfiguration) {
                     .run()
                     .get(0)
                     .expect(java.lang.Long::class.java)
-                    .let(::maskTensorToImage)
+                    .use(::maskTensorToImage)
         }
     }
 
@@ -100,8 +100,6 @@ class SegmentationService(val app: AppConfiguration) {
                 maskImage.setRGB(x.toInt(), y.toInt(), labelToColour(maskBuffer[i]))
             }
         }
-
-        result.close()
 
         return maskImage
     }

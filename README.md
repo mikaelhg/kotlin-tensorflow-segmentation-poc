@@ -19,14 +19,14 @@ Use `git lfs` when pushing model files to GitHub.
 
 As always, TensorFlow is very finicky about its support libraries.
 
-The Google-built TensorFlow 1.7.0 version in Maven Central is built for CUDA 9.0, cuDNN 7.0,
+The Google-built TensorFlow 1.15.0 version in Maven Central is built for CUDA 10.0, cuDNN 7.5,
 and the CPU module wasn't compiled with the same optimizations that are now standard with the
 Python module.
 
 For production use, you'd absolutely want to do your own series of builds of the 
 `libtensorflow_jni` and `libtensorflow_jni_gpu` libraries and JARs for a matrix of 
-CUDA 9.0 and 9.1, cuDNN 7.0 and 7.1, AVX, AVX2, and Intel MKL. Plus a custom JNI module 
-which loads the correct combination for what you have installed on your actual machine.
+CUDA and cuDNN library versions, AVX, AVX2, and Intel MKL. Then leverage `LD_LIBRARY_PATH`
+to select the correct CUDA and cuDNN library versions when running your application.
 
 One could say that you could just standardize your organization on certain versions, but that's
 easier said than done, given how fast the libraries are developing, and the need for almost all
@@ -40,7 +40,7 @@ done in GPU memory, but since your graph file is > 500MB, you must set `-Xmx1g`.
 For this use case, go with the MobileNetV2 models, since their resource to performance ratio
 is currently best. 
 
-Nowhere mentioned in the TensorFlow for Java documentation is the `org.tensorflow:proto:1.7.0` 
+Nowhere mentioned in the TensorFlow for Java documentation is the `org.tensorflow:proto:1.15.0`
 Maven JAR, which contains the dependencies with Google Protocol Buffers that are required for
 TF session configuration and reading any response metadata.
 
@@ -51,15 +51,28 @@ configuration options, let's see how that goes. Worst case, do it through enviro
 
 ### Hopes and dreams
 
-Since Ubuntu 18.04 LTS is very soon coming out, I'm hoping that Google and NVidia will base their
+☑ Since Ubuntu 18.04 LTS is very soon coming out, I'm hoping that Google and NVidia will base their
 libraries on that, and we'll kind of get a reasonable baseline for all the different kinds of
 libraries that are required for actual application development.
 
-It would be nice if the official libraries shipped in Maven JARs would be compiled with the same
+☐ It would be nice if the official libraries shipped in Maven JARs would be compiled with the same
 optimizations as the Python libraries.
 
-`org.tensorflow.Graph.importGraphDef(byte[])` should also support import from a stream, or an
+☐ `org.tensorflow.Graph.importGraphDef(byte[])` should also support import from a stream, or an
 off-heap bytebuffer.
+
+### Build
+
+```
+DOCKER_BUILDKIT=1 docker build -t docker.mikael.io/mikaelhg/kotlin-tensorflow-segmentation-poc:1.0.0 .
+```
+
+### Run
+
+```
+docker run --gpus all -it --rm --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+  docker.mikael.io/mikaelhg/kotlin-tensorflow-segmentation-poc:1.0.0
+```
 
 ### Installation
 

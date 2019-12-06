@@ -24,7 +24,6 @@ class SegmentationTest {
     lateinit var imageFile: Resource
 
     @Test
-    @Ignore
     fun init() {
         imageFile.inputStream.use {
             val mask = segmentationService.transform(ImageIO.read(it))
