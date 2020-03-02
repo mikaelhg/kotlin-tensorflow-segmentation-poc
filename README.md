@@ -74,6 +74,15 @@ docker run --gpus all -it --rm --shm-size=1g --ulimit memlock=-1 --ulimit stack=
   docker.mikael.io/mikaelhg/kotlin-tensorflow-segmentation-poc:1.0.0
 ```
 
+### Run locally
+
+Check out https://mikael.io/post/cuda-install/ for your CUDA and cuDNN installation.
+
+```bash
+LD_LIBRARY_PATH=/usr/local/cuda-10.0.130/lib64:/usr/local/cudnn-10.0-7.4.2.24/lib64 \
+  java -jar target/kotlin-tensorflow-segmentation-poc-1.0.0-gpu.jar
+```
+
 ### Installation
 
 By default, the POC runs in CPU mode, which is much, much slower than the GPU mode,

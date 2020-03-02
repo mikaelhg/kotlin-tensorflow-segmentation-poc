@@ -11,3 +11,4 @@ node_modules/
 /dump.*
 /application-default.yml
 node_modules/
+/bin

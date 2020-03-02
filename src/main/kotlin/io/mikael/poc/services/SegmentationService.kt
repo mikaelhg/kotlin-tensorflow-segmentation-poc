@@ -87,6 +87,7 @@ class SegmentationService(val app: AppConfiguration) {
     /**
      * Contract: Closes the input tensor.
      */
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
     private fun maskTensorToImage(result: Tensor<java.lang.Long>): BufferedImage {
         val maskBuffer = LongBuffer.allocate(result.numElements())
         result.writeTo(maskBuffer)

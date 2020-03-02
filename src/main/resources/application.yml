@@ -1,11 +1,5 @@
 logging.level:
-  org.hibernate: ERROR
-  org.springframework: ERROR
-  io.undertow: ERROR
-  org.xnio: ERROR
-  org.apache: ERROR
-  org.flywaydb: ERROR
-  com.zaxxer: ERROR
+  root: ERROR
   io.mikael: DEBUG
 
 spring.jackson.serialization.indent_output: true

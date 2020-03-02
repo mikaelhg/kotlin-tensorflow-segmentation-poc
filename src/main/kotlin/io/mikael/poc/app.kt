@@ -85,25 +85,25 @@ class PresentationHandler(val svc: PresentationService) {
 
     fun showImage(req: ServerRequest): Mono<ServerResponse> {
         val id = req.pathVariable("id").toLong()
-        return png().syncBody(svc.showImage(id))
+        return png().bodyValue(svc.showImage(id))
     }
 
     fun showMask(req: ServerRequest): Mono<ServerResponse> {
         val id = req.pathVariable("id").toLong()
-        return png().syncBody(svc.showMask(id))
+        return png().bodyValue(svc.showMask(id))
     }
 
     fun showCombined(req: ServerRequest): Mono<ServerResponse> {
         val imageId = req.pathVariable("imageId").toLong()
         val maskId = req.pathVariable("maskId").toLong()
-        return png().syncBody(svc.showCombined(imageId, maskId))
+        return png().bodyValue(svc.showCombined(imageId, maskId))
     }
 
     fun uploadImage(req: ServerRequest): Mono<ServerResponse> {
         return req.body(BodyExtractors.toMultipartData())
                 .flatMap {
                     val filePart = it.getFirst("file") as FilePart
-                    ok().syncBody(svc.processImage(filePart))
+                    ok().bodyValue(svc.processImage(filePart))
                 }
     }
 
