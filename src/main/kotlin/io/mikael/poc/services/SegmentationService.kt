@@ -2,21 +2,19 @@ package io.mikael.poc.services
 
 import io.mikael.poc.AppConfiguration
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.util.StreamUtils
-import org.tensorflow.Graph
-import org.tensorflow.Session
-import org.tensorflow.Tensor
-import org.tensorflow.TensorFlow
-import org.tensorflow.framework.ConfigProto
-import org.tensorflow.framework.GPUOptions
-import org.tensorflow.types.UInt8
+import org.tensorflow.*
+import org.tensorflow.ndarray.Shape
+import org.tensorflow.ndarray.buffer.DataBuffers
+import org.tensorflow.proto.framework.ConfigProto
+import org.tensorflow.proto.framework.GPUOptions
+import org.tensorflow.proto.framework.GraphDef
+import org.tensorflow.types.TInt64
+import org.tensorflow.types.TUint8
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
 import java.nio.ByteBuffer
-import java.nio.LongBuffer
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 import kotlin.math.max
@@ -44,7 +42,7 @@ class SegmentationService(val app: AppConfiguration) {
 
         graph = Graph().apply {
             app.model.inputStream.use {
-                importGraphDef(StreamUtils.copyToByteArray(it))
+                importGraphDef(GraphDef.parseFrom(it))
             }
         }
 
@@ -60,7 +58,7 @@ class SegmentationService(val app: AppConfiguration) {
             config.putDeviceCount("GPU", 0)
         }
         config.gpuOptions = gpuOptions.build()
-        session = Session(graph, config.build().toByteArray())
+        session = Session(graph, config.build())
     }
 
     @PreDestroy
@@ -76,7 +74,7 @@ class SegmentationService(val app: AppConfiguration) {
                     .fetch(OUTPUT_TENSOR_NAME)
                     .run()
                     .get(0)
-                    .expect(java.lang.Long::class.java)
+                    .expect(TInt64.DTYPE)
                     .use(::maskTensorToImage)
         }
     }
@@ -87,25 +85,22 @@ class SegmentationService(val app: AppConfiguration) {
     /**
      * Contract: Closes the input tensor.
      */
-    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-    private fun maskTensorToImage(result: Tensor<java.lang.Long>): BufferedImage {
-        val maskBuffer = LongBuffer.allocate(result.numElements())
-        result.writeTo(maskBuffer)
-
-        val (_, height, width) = result.shape()
+    private fun maskTensorToImage(result: Tensor<TInt64>): BufferedImage {
+        val maskBuffer = result.rawData().asLongs()
+        val (_, height, width) = result.shape().asArray()
         val maskImage = BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_BYTE_BINARY)
 
         for (x in 0 until width) {
             for (y in 0 until height) {
-                val i = ((y * width) + x).toInt()
-                maskImage.setRGB(x.toInt(), y.toInt(), labelToColour(maskBuffer[i]))
+                val i = ((y * width) + x)
+                maskImage.setRGB(x.toInt(), y.toInt(), labelToColour(maskBuffer.getLong(i)))
             }
         }
 
         return maskImage
     }
 
-    private fun makeImageTensor(input: BufferedImage): Tensor<UInt8> {
+    private fun makeImageTensor(input: BufferedImage): Tensor<TUint8> {
         val resizeRatio = INPUT_IMAGE_SIZE / max(input.width, input.height)
         val rw = (input.width * resizeRatio).toInt()
         val rh = (input.height * resizeRatio).toInt()
@@ -121,8 +116,8 @@ class SegmentationService(val app: AppConfiguration) {
         val data = (img.data.dataBuffer as DataBufferByte).data
         bgr2rgb(data)
 
-        val shape = longArrayOf(BATCH_SIZE, img.height.toLong(), img.width.toLong(), CHANNELS)
-        return Tensor.create(UInt8::class.java, shape, ByteBuffer.wrap(data))
+        val shape = Shape.of(BATCH_SIZE, img.height.toLong(), img.width.toLong(), CHANNELS)
+        return Tensor.of(TUint8.DTYPE, shape, DataBuffers.of(ByteBuffer.wrap(data)))
     }
 
     private fun bgr2rgb(data: ByteArray) {

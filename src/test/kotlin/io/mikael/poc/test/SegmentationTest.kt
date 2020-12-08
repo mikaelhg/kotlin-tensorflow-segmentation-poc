@@ -1,9 +1,8 @@
 package io.mikael.poc.test
 
 import io.mikael.poc.services.SegmentationService
-import org.junit.Assert
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -28,7 +27,7 @@ class SegmentationTest {
         imageFile.inputStream.use {
             val mask = segmentationService.transform(ImageIO.read(it))
             val targetSize = SegmentationService.INPUT_IMAGE_SIZE.toInt()
-            Assert.assertTrue("size", mask.width == targetSize || mask.height == targetSize)
+            Assertions.assertTrue(mask.width == targetSize || mask.height == targetSize, "size")
         }
     }
 
