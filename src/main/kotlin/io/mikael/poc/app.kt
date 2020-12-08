@@ -8,14 +8,11 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
-import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.BodyExtractors
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.ServerResponse.ok
-import org.springframework.web.reactive.function.server.router
-import reactor.core.publisher.Mono
+import org.springframework.web.servlet.function.ServerRequest
+import org.springframework.web.servlet.function.ServerResponse
+import org.springframework.web.servlet.function.ServerResponse.ok
+import org.springframework.web.servlet.function.router
 
 object Main {
     @JvmStatic
@@ -79,32 +76,29 @@ class PresentationHandler(val svc: PresentationService) {
         private val TEXT_HTML_UTF8 = MediaType.parseMediaType("text/html; charset=utf-8")
     }
 
-    fun indexPage(req: ServerRequest): Mono<ServerResponse> {
+    fun indexPage(req: ServerRequest): ServerResponse {
         return html().render("index")
     }
 
-    fun showImage(req: ServerRequest): Mono<ServerResponse> {
+    fun showImage(req: ServerRequest): ServerResponse {
         val id = req.pathVariable("id").toLong()
-        return png().bodyValue(svc.showImage(id))
+        return png().body(svc.showImage(id))
     }
 
-    fun showMask(req: ServerRequest): Mono<ServerResponse> {
+    fun showMask(req: ServerRequest): ServerResponse {
         val id = req.pathVariable("id").toLong()
-        return png().bodyValue(svc.showMask(id))
+        return png().body(svc.showMask(id))
     }
 
-    fun showCombined(req: ServerRequest): Mono<ServerResponse> {
+    fun showCombined(req: ServerRequest): ServerResponse {
         val imageId = req.pathVariable("imageId").toLong()
         val maskId = req.pathVariable("maskId").toLong()
-        return png().bodyValue(svc.showCombined(imageId, maskId))
+        return png().body(svc.showCombined(imageId, maskId))
     }
 
-    fun uploadImage(req: ServerRequest): Mono<ServerResponse> {
-        return req.body(BodyExtractors.toMultipartData())
-                .flatMap {
-                    val filePart = it.getFirst("file") as FilePart
-                    ok().bodyValue(svc.processImage(filePart))
-                }
+    fun uploadImage(req: ServerRequest): ServerResponse {
+        val filePart = req.multipartData().getFirst("file")!!
+        return ok().body(svc.processImage(filePart))
     }
 
     private fun png() = ServerResponse.ok().contentType(MediaType.IMAGE_PNG)

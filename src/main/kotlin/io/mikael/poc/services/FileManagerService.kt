@@ -1,11 +1,13 @@
 package io.mikael.poc.services
 
 import org.slf4j.LoggerFactory
-import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 import java.awt.image.BufferedImage
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 import javax.imageio.ImageIO
+import javax.servlet.http.Part
 
 @Service
 class FileManagerService {
@@ -14,9 +16,11 @@ class FileManagerService {
         private val log = LoggerFactory.getLogger(FileManagerService::class.java)
     }
 
-    fun saveImage(filePart: FilePart): String {
+    fun saveImage(filePart: Part): String {
         val temp = File.createTempFile("image-", ".png")
-        filePart.transferTo(temp)
+        filePart.inputStream.use { inputStream ->
+            Files.copy(inputStream, temp.toPath(), REPLACE_EXISTING)
+        }
         return temp.absolutePath
     }
 

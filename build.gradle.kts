@@ -27,7 +27,7 @@ dependencies {
 
     implementation("org.tensorflow:tensorflow-core-platform:0.3.0-SNAPSHOT")
 
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")

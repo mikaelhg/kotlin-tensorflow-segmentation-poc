@@ -2,7 +2,6 @@ package io.mikael.poc.services
 
 import io.mikael.poc.ProcessResponse
 import org.slf4j.LoggerFactory
-import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -13,6 +12,7 @@ import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 import javax.imageio.ImageIO
+import javax.servlet.http.Part
 
 @Service
 class PresentationService(private val fileManager: FileManagerService, private val segmentation: SegmentationService) {
@@ -27,7 +27,7 @@ class PresentationService(private val fileManager: FileManagerService, private v
 
     private val masks = ConcurrentHashMap<Long, String>()
 
-    fun processImage(filePart: FilePart): ProcessResponse {
+    fun processImage(filePart: Part): ProcessResponse {
         val imageId = persistImage(filePart)
         val mask = segmentation.transform(ImageIO.read(File(images[imageId]!!)))
         val maskId = persistMask(mask)
@@ -73,7 +73,7 @@ class PresentationService(private val fileManager: FileManagerService, private v
         }
     }
 
-    private fun persistImage(filePart: FilePart): Long {
+    private fun persistImage(filePart: Part): Long {
         val id = counter.getAndIncrement()
         images[id] = fileManager.saveImage(filePart)
         return id
