@@ -67,13 +67,16 @@ class SegmentationService(val app: AppConfiguration) {
         graph.close()
     }
 
+    /**
+     * The calls to `use {}` will close the tensors and should free all of the resources.
+     */
     fun transform(inputImage: BufferedImage): BufferedImage {
         makeImageTensor(inputImage).use {
             return session.runner()
                     .feed(INPUT_TENSOR_NAME, it)
                     .fetch(OUTPUT_TENSOR_NAME)
                     .run()
-                    .get(0)
+                    .first()
                     .expect(TInt64.DTYPE)
                     .use(::maskTensorToImage)
         }
@@ -89,14 +92,12 @@ class SegmentationService(val app: AppConfiguration) {
         val maskBuffer = result.rawData().asLongs()
         val (_, height, width) = result.shape().asArray()
         val maskImage = BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_BYTE_BINARY)
-
         for (x in 0 until width) {
             for (y in 0 until height) {
                 val i = ((y * width) + x)
                 maskImage.setRGB(x.toInt(), y.toInt(), labelToColour(maskBuffer.getLong(i)))
             }
         }
-
         return maskImage
     }
 

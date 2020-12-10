@@ -1,12 +1,13 @@
 ## Kotlin Tensorflow image segmentation POC
 
-April 2018.
+This POC was originally built in April 2018, but it was revised in December 2020
+to support the new Tensorflow Java API and Tensorflow 2.3.1.
 
 What we're testing here:
 
 How to take a TensorFlow neural network graph, in this case the TensorFlow Models research
 model for DeepLab image segmentation, and incorporate it into a JVM application built on 
-Java 10, Kotlin, Spring Boot, Vue.js, jQuery and Bootstrap.
+Java 15, Kotlin, Spring Boot, Vue.js, jQuery and Bootstrap.
 
 ### TL;DR
 
@@ -16,6 +17,15 @@ to include TensorFlow into your JVM application architecture.
 Use `git lfs` when pushing model files to GitHub.
 
 ### Lessons learned
+
+#### December 2020
+
+The new Tensorflow Java API required only slight changes to the application code.
+
+The actual inference calls are much faster with the new Tensorflow versions, but
+the memory requirements for loading a graph grew considerably.
+
+#### April 2018
 
 As always, TensorFlow is very finicky about its support libraries.
 

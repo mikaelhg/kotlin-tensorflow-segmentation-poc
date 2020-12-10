@@ -7,6 +7,6 @@ RUN --mount=type=cache,target=/root/.gradle ./gradlew build -x test
 
 FROM adoptopenjdk:15 AS DEPLOY
 WORKDIR /app
-COPY --from=BUILD /build/target/*-cpu.jar /app/app.jar
-ENV _JAVA_OPTIONS "-Xmx64m -Xms64m -Djava.security.file=file:/dev/./urandom -XX:+UseZGC"
+COPY --from=BUILD /build/build/libs/kotlin-tensorflow-segmentation-poc.jar /app/app.jar
+ENV _JAVA_OPTIONS "-Xmx512m -Xms512m"
 CMD java -jar /app/app.jar
