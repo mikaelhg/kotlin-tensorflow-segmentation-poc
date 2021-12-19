@@ -3,16 +3,13 @@ package io.mikael.poc.test
 import io.mikael.poc.services.SegmentationService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE
 import org.springframework.core.io.Resource
-import org.springframework.test.context.junit4.SpringRunner
 import javax.imageio.ImageIO
 
-@RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = NONE)
 class SegmentationTest {
 

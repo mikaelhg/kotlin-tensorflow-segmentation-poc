@@ -1,4 +1,4 @@
-FROM adoptopenjdk:15 AS BUILD
+FROM adoptopenjdk:17 AS BUILD
 WORKDIR /build
 COPY . /build
 RUN --mount=type=cache,target=/root/.gradle ./gradlew build -x test

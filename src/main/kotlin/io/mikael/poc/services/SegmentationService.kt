@@ -71,14 +71,14 @@ class SegmentationService(val app: AppConfiguration) {
      * The calls to `use {}` will close the tensors and should free all of the resources.
      */
     fun transform(inputImage: BufferedImage): BufferedImage {
-        makeImageTensor(inputImage).use {
-            return session.runner()
-                    .feed(INPUT_TENSOR_NAME, it)
-                    .fetch(OUTPUT_TENSOR_NAME)
-                    .run()
-                    .first()
-                    .expect(TInt64.DTYPE)
-                    .use(::maskTensorToImage)
+        return makeImageTensor(inputImage).use {
+            return@use session.runner()
+                .feed(INPUT_TENSOR_NAME, it)
+                .fetch(OUTPUT_TENSOR_NAME)
+                .run()
+                .map { x -> x as TInt64 }
+                .first()
+                .use(::maskTensorToImage)
         }
     }
 
@@ -88,20 +88,19 @@ class SegmentationService(val app: AppConfiguration) {
     /**
      * Contract: Closes the input tensor.
      */
-    private fun maskTensorToImage(result: Tensor<TInt64>): BufferedImage {
-        val maskBuffer = result.rawData().asLongs()
+    private fun maskTensorToImage(result: TInt64): BufferedImage {
         val (_, height, width) = result.shape().asArray()
         val maskImage = BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_BYTE_BINARY)
         for (x in 0 until width) {
             for (y in 0 until height) {
                 val i = ((y * width) + x)
-                maskImage.setRGB(x.toInt(), y.toInt(), labelToColour(maskBuffer.getLong(i)))
+                maskImage.setRGB(x.toInt(), y.toInt(), labelToColour(result.getLong(0, y, x)))
             }
         }
         return maskImage
     }
 
-    private fun makeImageTensor(input: BufferedImage): Tensor<TUint8> {
+    private fun makeImageTensor(input: BufferedImage): TUint8 {
         val resizeRatio = INPUT_IMAGE_SIZE / max(input.width, input.height)
         val rw = (input.width * resizeRatio).toInt()
         val rh = (input.height * resizeRatio).toInt()
@@ -118,7 +117,7 @@ class SegmentationService(val app: AppConfiguration) {
         bgr2rgb(data)
 
         val shape = Shape.of(BATCH_SIZE, img.height.toLong(), img.width.toLong(), CHANNELS)
-        return Tensor.of(TUint8.DTYPE, shape, DataBuffers.of(ByteBuffer.wrap(data)))
+        return Tensor.of(TUint8::class.java, shape, DataBuffers.of(ByteBuffer.wrap(data)))
     }
 
     private fun bgr2rgb(data: ByteArray) {
