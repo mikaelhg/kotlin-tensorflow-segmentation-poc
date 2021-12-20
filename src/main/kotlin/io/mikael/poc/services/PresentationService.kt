@@ -15,7 +15,8 @@ import javax.imageio.ImageIO
 import javax.servlet.http.Part
 
 @Service
-class PresentationService(private val fileManager: FileManagerService, private val segmentation: SegmentationService) {
+class PresentationService(private val fileManager: FileManagerService,
+                          private val segmentation: SegmentationService) {
 
     companion object {
         private val log = LoggerFactory.getLogger(PresentationService::class.java)
@@ -67,9 +68,9 @@ class PresentationService(private val fileManager: FileManagerService, private v
             }
         }
 
-        ByteArrayOutputStream().use { baos ->
+        return ByteArrayOutputStream().use { baos ->
             ImageIO.write(result, "PNG", baos)
-            return baos.toByteArray()
+            baos.toByteArray()
         }
     }
 

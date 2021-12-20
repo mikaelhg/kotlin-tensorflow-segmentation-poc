@@ -70,16 +70,14 @@ class SegmentationService(val app: AppConfiguration) {
     /**
      * The calls to `use {}` will close the tensors and should free all of the resources.
      */
-    fun transform(inputImage: BufferedImage): BufferedImage {
-        return makeImageTensor(inputImage).use {
-            return@use session.runner()
-                .feed(INPUT_TENSOR_NAME, it)
-                .fetch(OUTPUT_TENSOR_NAME)
-                .run()
-                .map { x -> x as TInt64 }
-                .first()
-                .use(::maskTensorToImage)
-        }
+    fun transform(inputImage: BufferedImage) = makeImageTensor(inputImage).use {
+        session.runner()
+            .feed(INPUT_TENSOR_NAME, it)
+            .fetch(OUTPUT_TENSOR_NAME)
+            .run()
+            .map { x -> x as TInt64 }
+            .first()
+            .use(::maskTensorToImage)
     }
 
     private fun labelToColour(label: Long) =
