@@ -45,13 +45,10 @@ Dropzone.options.myAwesomeDropzone = {
 $(function() {
     console.log("ready!");
 
-    app = new Vue({
-        el: '#app',
-        data: {
-            images: []
-        },
-        methods: {
+    app = Vue.createApp({
+        data() {
+            return { images: [] }
         }
-    });
+    }).mount('#app');
 
 });
