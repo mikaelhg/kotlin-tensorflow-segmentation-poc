@@ -7,7 +7,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 import javax.imageio.ImageIO
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 
 @Service
 class FileManagerService {

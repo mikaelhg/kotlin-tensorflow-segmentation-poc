@@ -1,6 +1,8 @@
 package io.mikael.poc.services
 
 import io.mikael.poc.AppConfiguration
+import jakarta.annotation.PostConstruct
+import jakarta.annotation.PreDestroy
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.tensorflow.*
@@ -15,8 +17,6 @@ import java.awt.Image
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
 import java.nio.ByteBuffer
-import javax.annotation.PostConstruct
-import javax.annotation.PreDestroy
 import kotlin.math.max
 
 @Service

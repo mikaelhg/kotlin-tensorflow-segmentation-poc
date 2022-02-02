@@ -12,7 +12,7 @@ import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 import javax.imageio.ImageIO
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 
 @Service
 class PresentationService(private val fileManager: FileManagerService,
