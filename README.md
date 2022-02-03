@@ -18,6 +18,16 @@ Use `git lfs` when pushing model files to GitHub.
 
 ### Lessons learned
 
+#### February 2022
+
+The actual changes in the Tensorflow Java API over the last year have been very slight,
+compared to the previous period. The packaging is still bad, and I would recommend using
+Tensorflow through any of the serving libraries and components which have come to market.
+
+The release of Java 17 brought JEP 412, which is a way to directly use dynamic libraries
+efficiently from Java code, without having to go through JNI. Potentially, using JEP 412
+and its successors would be a superior way to consume the Tensorflow C ABI.
+
 #### December 2020
 
 The new Tensorflow Java API required only slight changes to the application code.
